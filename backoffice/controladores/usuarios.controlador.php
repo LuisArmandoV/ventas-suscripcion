@@ -40,6 +40,12 @@ Class ControladorUsuarios{
             $respuesta = ModeloUsuarios::mdlRegistroUsuario($tabla, $datos);
 
             if($respuesta == "ok"){
+
+
+
+
+
+                
                 echo '<script>
                     swal({
                         type:"success",
