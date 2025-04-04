@@ -160,6 +160,16 @@ Class ControladorUsuarios{
 
             }else{
 
+<<<<<<< HEAD
+            if($respuesta == "ok"){
+
+
+
+
+
+                
+=======
+>>>>>>> aac5a0a71fb9ca8bd3d1a78c895ee30c0d551b08
                 echo '<script>
 
                     swal({
