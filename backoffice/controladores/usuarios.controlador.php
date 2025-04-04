@@ -57,7 +57,7 @@ Class ControladorUsuarios{
 
                         $mail->addReplyTo("admin@compraganando.com", "Compra Ganando");
 
-                        $mail->Subject  = "Por favor verifique su dirección de correo electrónico";
+                        $mail->Subject = mb_encode_mimeheader("🔹 Verifique su dirección de correo electrónico 🔹", "UTF-8");
 
                         $mail->addAddress($_POST["registroEmail"]);
 
