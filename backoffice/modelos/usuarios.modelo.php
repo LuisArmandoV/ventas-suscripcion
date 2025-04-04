@@ -69,7 +69,7 @@ class ModeloUsuarios{
 
 	/*=============================================
 	Actualizar usuario
-	=============================================
+	=============================================*/
 
 	static public function mdlActualizarUsuario($tabla, $id, $item, $valor){
 
@@ -92,6 +92,6 @@ class ModeloUsuarios{
 
 		$stmt = null;
 		
-	} */
+	} 
 
 }

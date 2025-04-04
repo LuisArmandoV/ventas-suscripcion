@@ -65,7 +65,7 @@ Class ControladorUsuarios{
     
                                 <center>
                                         
-                                    <img style="padding:20px; width:10%" src="https://tutorialesatualcance.com/tienda/logo.png">
+                                    <img style="padding:20px; width:10%" src="https://ventas.compraganando.com/ventas-suscripcion/imagenes/logo1.png">
 
                                 </center>
 
@@ -73,7 +73,7 @@ Class ControladorUsuarios{
                                     
                                     <center>
 
-                                        <img style="padding:20px; width:15%" src="https://tutorialesatualcance.com/tienda/icon-email.png">
+                                        <img style="padding:20px; width:15%" src="https://ventas.compraganando.com/ventas-suscripcion/imagenes/iconoemail.png">
 
                                         <h3 style="font-weight:100; color:#999">VERIFIQUE SU DIRECCIÓN DE CORREO ELECTRÓNICO</h3>
 
@@ -160,17 +160,8 @@ Class ControladorUsuarios{
 
             }else{
 
-<<<<<<< HEAD
-            if($respuesta == "ok"){
 
-
-
-
-
-                
-=======
->>>>>>> aac5a0a71fb9ca8bd3d1a78c895ee30c0d551b08
-                echo '<script>
+          echo '<script>
 
                     swal({
 
@@ -201,8 +192,6 @@ Class ControladorUsuarios{
     }
 
 
-
-
     /*=============================================
 	Mostrar Usuarios
 	=============================================*/
@@ -216,6 +205,25 @@ Class ControladorUsuarios{
 		return $respuesta;
 
 	}
+
+
+    /*=============================================
+    Actualizar Usuario
+    =============================================*/
+
+    static public function ctrActualizarUsuario($id, $item, $valor){
+
+        $tabla = "usuarios";
+
+        $respuesta = ModeloUsuarios::mdlActualizarUsuario($tabla, $id, $item, $valor);
+
+        return $respuesta;
+
+    }
+
+
+
+    
 
 
 }
