@@ -63,18 +63,45 @@ $ruta = ControladorRuta::ctrRuta();
 
 <body>
 
+	<?php 
+
+	if(isset($_GET["pagina"])){
+
 	/*=============================================
 	Validar correo electrónico
 	=============================================*/
-
+	
 	$item = "email_encriptado";
 	$valor = $_GET["pagina"];
 
 	$validarCorreo = ControladorUsuarios::ctrMostrarUsuarios($item, $valor);
 
-	if($validarCorreo["email_encriptado"] == $_GET["pagina"]){
+	/*if($validarCorreo["email_encriptado"] == $_GET["pagina"]){*/
+	if(is_array($validarCorreo) && isset($validarCorreo["email_encriptado"]) && $validarCorreo["email_encriptado"] == $_GET["pagina"]){
 
 		$id = $validarCorreo["id_usuario"];
+
+		$respuesta1 = ControladorUsuarios::ctrActualizarUsuario($id, "verificacion", 1);
+		$respuesta2 = ControladorUsuarios::ctrActualizarUsuario($id, "suscripcion", 1);
+
+		if($respuesta1 == "ok" && $respuesta2 == "ok"){
+		    echo'<script>
+		        swal({
+		            type:"success",
+		            title: "¡CORRECTO!",
+		            text: "¡Su cuenta ha sido verificada, ya puede ingresar al sistema!",
+		            showConfirmButton: true,
+		            confirmButtonText: "Cerrar"
+		        }).then(function(result){
+		            if(result.value){   
+		                window.location = "'.$ruta.'ingreso"
+		            } 
+		        });
+		    </script>';
+		    return;
+		}
+
+		/*$id = $validarCorreo["id_usuario"];
 		$item = "verificacion";
 		$valor = 1;
 
@@ -102,21 +129,10 @@ $ruta = ControladorRuta::ctrRuta();
 
 			return;
 
-		}
+		}*/
 	
 	}
 	
-
-	if( $_GET["pagina"] == "inicio"){
-
-		include "paginas/inicio.php";
-
-	}
-
-
-<?php 
-
-if(isset($_GET["pagina"])){
 
 	if( $_GET["pagina"] == "inicio"){
 

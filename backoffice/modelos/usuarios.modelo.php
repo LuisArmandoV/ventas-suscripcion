@@ -92,6 +92,9 @@ class ModeloUsuarios{
 
 		$stmt = null;
 		
-	} 
+	}
+
+
+	
 
 }

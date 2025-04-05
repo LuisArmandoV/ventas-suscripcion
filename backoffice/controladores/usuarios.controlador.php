@@ -47,7 +47,7 @@ Class ControladorUsuarios{
 
                         date_default_timezone_set("America/Bogota");
 
-                        $mail = new PHPMailer;
+                        /*$mail = new PHPMailer;
 
                         $mail->Charset = "UTF-8";
 
@@ -55,7 +55,22 @@ Class ControladorUsuarios{
 
                         $mail->setFrom("admin@compraganando.com", "Compra Ganando");
 
-                        $mail->addReplyTo("admin@compraganando.com", "Compra Ganando");
+                        $mail->addReplyTo("admin@compraganando.com", "Compra Ganando");*/
+
+                        $mail = new PHPMailer(true);
+                        $mail->Charset = "UTF-8";
+                        // Configuración SMTP
+                        $mail->isSMTP();
+                        $mail->Host = 'smtp.gmail.com';
+                        $mail->SMTPAuth = true;
+                        $mail->Username = 'enmitiendavirtual1@gmail.com';          // Tu correo
+                        $mail->Password = 'gsxx zmga yjfn geyh'; // Contraseña o app password
+                        $mail->SMTPSecure = 'tls';
+                        $mail->Port = 587;
+                        // Remitente y respuesta
+                        $mail->setFrom('enmitiendavirtual1@gmail.com', 'Compra Ganando');
+                        $mail->addReplyTo('enmitiendavirtual1@gmail.com', 'Compra Ganando');
+
 
                         $mail->Subject = mb_encode_mimeheader("🔹 Verifique su dirección de correo electrónico 🔹", "UTF-8");
 
@@ -97,7 +112,6 @@ Class ControladorUsuarios{
 
                                 </div>
 
-
                             </div>');
                                 
                         $envio = $mail->Send();
@@ -122,11 +136,9 @@ Class ControladorUsuarios{
 
                                 }
 
-
                             }); 
 
                         </script>';
-
 
                     }else{
 
@@ -149,7 +161,6 @@ Class ControladorUsuarios{
 
                                 }
 
-
                             }); 
 
                         </script>';
@@ -159,7 +170,6 @@ Class ControladorUsuarios{
                 }
 
             }else{
-
 
           echo '<script>
 
@@ -179,7 +189,6 @@ Class ControladorUsuarios{
 
                         }
 
-
                     }); 
 
                 </script>';
@@ -190,7 +199,6 @@ Class ControladorUsuarios{
         }
 
     }
-
 
     /*=============================================
 	Mostrar Usuarios
@@ -222,8 +230,118 @@ Class ControladorUsuarios{
     }
 
 
+    /*=============================================
+    Ingreso Usuario
+    =============================================*/
 
-    
+    public function ctrIngresoUsuario(){
+
+        if(isset($_POST["ingresoEmail"])){
+
+             if(preg_match('/^[^0-9][a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[@][a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[.][a-zA-Z]{2,4}$/', $_POST["ingresoEmail"]) && preg_match('/^[a-zA-Z0-9]+$/', $_POST["ingresoPassword"])){
+
+                $encriptar = crypt($_POST["ingresoPassword"], '$2a$07$asxx54ahjppf45sd87a5a4dDDGsystemdev$');
+
+                $tabla = "usuarios";
+                $item = "email";
+                $valor = $_POST["ingresoEmail"];
+
+                $respuesta = ModeloUsuarios::mdlMostrarUsuarios($tabla, $item, $valor);
+
+                if($respuesta["email"] == $_POST["ingresoEmail"] && $respuesta["password"] == $encriptar){
+
+                    if($respuesta["verificacion"] == 0){
+
+                        echo'<script>
+
+                            swal({
+                                    type:"error",
+                                    title: "¡ERROR!",
+                                    text: "¡El correo electrónico aún no ha sido verificado, por favor revise la bandeja de entrada o la carpeta SPAM de su correo electrónico para verificar la cuenta, o contáctese con nuestro soporte a admin@compraganando.com!",
+                                    showConfirmButton: true,
+                                    confirmButtonText: "Cerrar"
+                                  
+                            }).then(function(result){
+
+                                    if(result.value){   
+                                        history.back();
+                                      } 
+                            });
+
+                        </script>';
+
+                        return;
+
+                    }else{
+
+                        $_SESSION["validarSesion"] = "ok";
+                        $_SESSION["id"] = $respuesta["id_usuario"];
+
+                        $ruta = ControladorRuta::ctrRuta();
+
+                        echo '<script>
+                    
+                            window.location = "'.$ruta.'backoffice";              
+
+                        </script>';
+
+                    }
+
+                }else{
+
+                    echo'<script>
+
+                        swal({
+                                type:"error",
+                                title: "¡ERROR!",
+                                text: "¡El email o contraseña no coinciden!",
+                                showConfirmButton: true,
+                                confirmButtonText: "Cerrar"
+                              
+                        }).then(function(result){
+
+                                if(result.value){   
+                                    history.back();
+                                  } 
+                        });
+
+                    </script>';
+
+                }
+
+
+             }else{
+
+                echo '<script>
+
+                    swal({
+
+                        type:"error",
+                        title: "¡CORREGIR!",
+                        text: "¡No se permiten caracteres especiales en ninguno de los campos!",
+                        showConfirmButton: true,
+                        confirmButtonText: "Cerrar"
+
+                    }).then(function(result){
+
+                        if(result.value){
+
+                            history.back();
+
+                        }
+
+                    }); 
+
+                </script>';
+
+             }
+
+        }
+
+    }
+   
+
+
 
 
 }
