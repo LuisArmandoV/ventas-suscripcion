@@ -1,3 +1,30 @@
+<?php 
+
+session_start();
+
+$ruta = ControladorGeneral::ctrRuta();
+$valorSuscripcion = ControladorGeneral::ctrValorSuscripcion();
+$patrocinador = ControladorGeneral::ctrPatrocinador();
+
+if(!isset($_SESSION["validarSesion"])){
+
+	echo '<script>
+
+		window.location = "'.$ruta.'ingreso";
+
+	</script>';
+
+	return;
+
+}
+
+$item = "id_usuario";
+$valor = $_SESSION["id"];
+
+$usuario = ControladorUsuarios::ctrMostrarUsuarios($item, $valor);
+
+?>
+
 <!DOCTYPE html>
 
 <html>
@@ -83,6 +110,9 @@
 	<!-- https://www.jqueryscript.net/other/Signature-Field-Plugin-jQuery-jSignature.html -->
 	<script src="vistas/js/plugins/jSignature.js"></script>
 	<script src="vistas/js/plugins/jSignature.CompressorSVG.js"></script>
+
+	<!-- SWEET ALERT 2 -->
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 	</head>
 

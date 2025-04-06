@@ -10,10 +10,20 @@
     <!-- Sidebar user panel (optional) -->
     <div class="user-panel mt-3 pb-3 mb-3 d-flex">
       <div class="image">
-        <img src="vistas/img/usuarios/default/default.png" class="img-circle elevation-2" alt="User Image">
+
+      <?php if ($usuario["foto"] == ""): ?>
+
+         <img src="vistas/img/usuarios/default/default.png" class="img-circle elevation-2" alt="User Image">
+
+      <?php else: ?>
+
+        <img src="<?php echo $usuario["foto"] ?>" class="img-circle elevation-2" alt="User Image">
+        
+      <?php endif ?>
+
       </div>
       <div class="info">
-        <a href="#" class="d-block">Administrador</a>
+        <a href="perfil" class="d-block"><?php echo $usuario["nombre"] ?></a>
       </div>
     </div>
 
@@ -36,12 +46,16 @@
           </a>
         </li>
 
-        <li class="nav-item">
-          <a href="usuarios" class="nav-link">
-            <i class="nav-icon fas fa-users"></i>
-            <p>Usuarios</p>
-          </a>
-        </li>
+        <?php if ($usuario["perfil"] == "admin"): ?>
+
+          <li class="nav-item">
+            <a href="usuarios" class="nav-link">
+              <i class="nav-icon fas fa-users"></i>
+              <p>Usuarios</p>
+            </a>
+          </li>
+
+        <?php endif ?>
 
         <li class="nav-item has-treeview">
           <a href="#" class="nav-link">

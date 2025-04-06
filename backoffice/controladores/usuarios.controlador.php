@@ -236,111 +236,287 @@ Class ControladorUsuarios{
 
     public function ctrIngresoUsuario(){
 
-        if(isset($_POST["ingresoEmail"])){
+    if(isset($_POST["ingresoEmail"])){
 
-             if(preg_match('/^[^0-9][a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[@][a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[.][a-zA-Z]{2,4}$/', $_POST["ingresoEmail"]) && preg_match('/^[a-zA-Z0-9]+$/', $_POST["ingresoPassword"])){
+        if(preg_match('/^[^0-9][a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[@][a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[.][a-zA-Z]{2,4}$/', $_POST["ingresoEmail"]) && preg_match('/^[a-zA-Z0-9]+$/', $_POST["ingresoPassword"])){
 
-                $encriptar = crypt($_POST["ingresoPassword"], '$2a$07$asxx54ahjppf45sd87a5a4dDDGsystemdev$');
+            $encriptar = crypt($_POST["ingresoPassword"], '$2a$07$asxx54ahjppf45sd87a5a4dDDGsystemdev$');
 
-                $tabla = "usuarios";
-                $item = "email";
-                $valor = $_POST["ingresoEmail"];
+            $tabla = "usuarios";
+            $item = "email";
+            $valor = $_POST["ingresoEmail"];
 
-                $respuesta = ModeloUsuarios::mdlMostrarUsuarios($tabla, $item, $valor);
+            $respuesta = ModeloUsuarios::mdlMostrarUsuarios($tabla, $item, $valor);
 
-                if($respuesta["email"] == $_POST["ingresoEmail"] && $respuesta["password"] == $encriptar){
+            if($respuesta["email"] == $_POST["ingresoEmail"] && $respuesta["password"] == $encriptar){
 
-                    if($respuesta["verificacion"] == 0){
-
-                        echo'<script>
-
-                            swal({
-                                    type:"error",
-                                    title: "¡ERROR!",
-                                    text: "¡El correo electrónico aún no ha sido verificado, por favor revise la bandeja de entrada o la carpeta SPAM de su correo electrónico para verificar la cuenta, o contáctese con nuestro soporte a admin@compraganando.com!",
-                                    showConfirmButton: true,
-                                    confirmButtonText: "Cerrar"
-                                  
-                            }).then(function(result){
-
-                                    if(result.value){   
-                                        history.back();
-                                      } 
-                            });
-
-                        </script>';
-
-                        return;
-
-                    }else{
-
-                        $_SESSION["validarSesion"] = "ok";
-                        $_SESSION["id"] = $respuesta["id_usuario"];
-
-                        $ruta = ControladorRuta::ctrRuta();
-
-                        echo '<script>
-                    
-                            window.location = "'.$ruta.'backoffice";              
-
-                        </script>';
-
-                    }
-
-                }else{
+                if($respuesta["verificacion"] == 0){
 
                     echo'<script>
+                    Swal.fire({
+                        icon: "error",
+                        title: "¡ERROR!",
+                        text: "¡El correo electrónico aún no ha sido verificado, por favor revise la bandeja de entrada o la carpeta SPAM de su correo electrónico para verificar la cuenta, o contáctese con nuestro soporte a admin@compraganando.com!",
+                        confirmButtonText: "Cerrar"
+                    }).then((result) => {
+                        if(result.isConfirmed){   
+                            history.back();
+                        } 
+                    });
+                    </script>';
 
-                        swal({
-                                type:"error",
-                                title: "¡ERROR!",
-                                text: "¡El email o contraseña no coinciden!",
-                                showConfirmButton: true,
-                                confirmButtonText: "Cerrar"
-                              
-                        }).then(function(result){
+                    return;
 
-                                if(result.value){   
-                                    history.back();
-                                  } 
-                        });
+                } else {
 
+                    $_SESSION["validarSesion"] = "ok";
+                    $_SESSION["id"] = $respuesta["id_usuario"];
+
+                    $ruta = ControladorRuta::ctrRuta();
+
+                    echo '<script>
+                        window.location = "'.$ruta.'backoffice";              
                     </script>';
 
                 }
 
+            } else {
 
-             }else{
-
-                echo '<script>
-
-                    swal({
-
-                        type:"error",
-                        title: "¡CORREGIR!",
-                        text: "¡No se permiten caracteres especiales en ninguno de los campos!",
-                        showConfirmButton: true,
-                        confirmButtonText: "Cerrar"
-
-                    }).then(function(result){
-
-                        if(result.value){
-
-                            history.back();
-
-                        }
-
-                    }); 
-
+                echo'<script>
+                Swal.fire({
+                    icon: "error",
+                    title: "¡ERROR!",
+                    text: "¡El email o contraseña no coinciden!",
+                    confirmButtonText: "Cerrar"
+                }).then((result) => {
+                    if(result.isConfirmed){   
+                        history.back();
+                    } 
+                });
                 </script>';
 
-             }
+            }
+
+        } else {
+
+            echo '<script>
+            Swal.fire({
+                icon: "error",
+                title: "¡CORREGIR!",
+                text: "¡No se permiten caracteres especiales en ninguno de los campos!",
+                confirmButtonText: "Cerrar"
+            }).then((result) => {
+                if(result.isConfirmed){
+                    history.back();
+                }
+            });
+            </script>';
 
         }
 
     }
+
+}
+
    
 
+    /*=============================================
+    Cambiar foto perfil
+    =============================================*/
+
+    public function ctrCambiarFotoPerfil(){
+
+        if(isset($_POST["idUsuarioFoto"])){
+
+            $ruta = $_POST["fotoActual"];
+
+            if(isset($_FILES["cambiarImagen"]["tmp_name"]) && !empty($_FILES["cambiarImagen"]["tmp_name"])){
+
+                list($ancho, $alto) = getimagesize($_FILES["cambiarImagen"]["tmp_name"]);
+
+                $nuevoAncho = 500;
+                $nuevoAlto = 500;
+
+                /*=============================================
+                CREAMOS EL DIRECTORIO DONDE VAMOS A GUARDAR LA FOTO DEL USUARIO
+                =============================================*/
+
+                $directorio = "vistas/img/usuarios/".$_POST["idUsuarioFoto"];
+
+                /*=============================================
+                PRIMERO PREGUNTAMOS SI EXISTE OTRA IMAGEN EN LA BD Y EL CARPETA
+                =============================================*/
+
+                if($ruta != ""){
+
+                    unlink($ruta);
+
+                }else{
+
+                    if(!file_exists($directorio)){  
+
+                        mkdir($directorio, 0755);
+
+                    }
+
+                }
+
+                /*=============================================
+                DE ACUERDO AL TIPO DE IMAGEN APLICAMOS LAS FUNCIONES POR DEFECTO DE PHP
+                =============================================*/
+
+                if($_FILES["cambiarImagen"]["type"] == "image/jpeg"){
+
+                    $aleatorio = mt_rand(100,999);
+
+                    $ruta = $directorio."/".$aleatorio.".jpg";
+
+                    $origen = imagecreatefromjpeg($_FILES["cambiarImagen"]["tmp_name"]);
+
+                    $destino = imagecreatetruecolor($nuevoAncho, $nuevoAlto);
+
+                    imagecopyresized($destino, $origen, 0, 0, 0, 0, $nuevoAncho, $nuevoAlto, $ancho, $alto);
+
+                    imagejpeg($destino, $ruta); 
+
+
+                }else if($_FILES["cambiarImagen"]["type"] == "image/png"){
+
+                    $aleatorio = mt_rand(100,999);
+
+                    $ruta = $directorio."/".$aleatorio.".png";
+
+                    $origen = imagecreatefrompng($_FILES["cambiarImagen"]["tmp_name"]); 
+
+                    $destino = imagecreatetruecolor($nuevoAncho, $nuevoAlto);   
+
+                    imagealphablending($destino, FALSE);
+        
+                    imagesavealpha($destino, TRUE);     
+
+                    imagecopyresized($destino, $origen, 0, 0, 0, 0, $nuevoAncho, $nuevoAlto, $ancho, $alto);        
+
+                    imagepng($destino, $ruta);
+
+                }else{
+
+                   echo '<script>
+
+                        Swal.fire({
+                            icon: "error",
+                            title: "¡CORREGIR!",
+                            text: "¡No se permiten formatos diferentes a JPG y/o PNG!",
+                            confirmButtonText: "Cerrar"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                history.back();
+                            }
+                        });
+
+                    </script>';
+
+
+                }
+            
+            }
+
+            // final condicion
+
+            $tabla = "usuarios";
+            $id = $_POST["idUsuarioFoto"];
+            $item = "foto";
+            $valor = $ruta;
+
+            $respuesta = ModeloUsuarios::mdlActualizarUsuario($tabla, $id, $item, $valor);
+
+            if($respuesta == "ok"){
+
+                echo '<script>
+
+                    Swal.fire({
+                        icon: "success",
+                        title: "¡CORRECTO!",
+                        text: "¡La foto de perfil ha sido actualizada!",
+                        confirmButtonText: "Cerrar"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            history.back();
+                        }
+                    });
+
+                </script>';
+
+
+
+            }
+
+        }
+
+    }
+
+
+    /*=============================================
+    Cambiar contraseña
+    =============================================*/
+
+    public function ctrCambiarPassword(){
+
+        if(isset($_POST["idUsuarioPassword"])){ 
+
+            if(preg_match('/^[a-zA-Z0-9]+$/', $_POST["editarPassword"])){
+
+                $encriptar = crypt($_POST["editarPassword"], '$2a$07$asxx54ahjppf45sd87a5a4dDDGsystemdev$');
+
+                $tabla = "usuarios";
+                $id = $_POST["idUsuarioPassword"];
+                $item = "password";
+                $valor = $encriptar;
+
+                $respuesta = ModeloUsuarios::mdlActualizarUsuario($tabla, $id, $item, $valor);
+
+                if($respuesta == "ok"){
+
+                   echo '<script>
+
+                    Swal.fire({
+                        icon: "success",
+                        title: "¡CORRECTO!",
+                        text: "¡La contraseña ha sido actualizada!",
+                        confirmButtonText: "Cerrar"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            history.back();
+                        }
+                    });
+
+                </script>';
+
+
+                }
+
+            }else{
+
+                echo '<script>
+
+                        Swal.fire({
+                            icon: "error",
+                            title: "¡CORREGIR!",
+                            text: "¡No se permiten caracteres especiales en la contraseña!",
+                            confirmButtonText: "Cerrar"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                history.back();
+                            }
+                        });
+
+                    </script>';
+
+             }
+
+
+        }
+
+    }
 
 
 

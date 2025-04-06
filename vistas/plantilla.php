@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 $ruta = ControladorRuta::ctrRuta(); 
 
  ?>
@@ -55,9 +55,13 @@ $ruta = ControladorRuta::ctrRuta();
 	<!-- https://www.jqueryscript.net/loading/Handle-Loading-Progress-jQuery-Nite-Preloader.html -->
 	<script src="js/plugins/jquery.nite.preloader.js"></script>
 
-	<!-- SWEET ALERT 2 -->	
-	<!-- https://sweetalert2.github.io/ -->
-	<script src="js/plugins/sweetalert2.all.js"></script>
+	<!-- SWEET ALERT 2  Este esta descatualizado y no funciona-->	
+	<!-- https://sweetalert2.github.io/ 
+	
+	<script src="vistas/js/plugins/sweetalert2.all.js"></script>  -->
+	<!-- SWEET ALERT 2 -->
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
 </head>
 
