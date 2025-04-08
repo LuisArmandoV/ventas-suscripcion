@@ -4,7 +4,7 @@ class ControladorGeneral{
 
 	static public function ctrRuta(){
 
-		return "http://localhost/ventas-suscripcion/";
+		return "http://compraganando-practica.com/ventas-suscripcion/";
 
 	}
 
@@ -16,7 +16,7 @@ class ControladorGeneral{
 	
 	static public function ctrPatrocinador(){
 
-		return "academy-of-life";
+		return "compra-ganando";
 
 	}
 }
